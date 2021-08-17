@@ -11,7 +11,7 @@ class TarefaController extends Controller
 {
     public function index()
     {
-        // Lista as tarefas e faz a paginação
+        // Lista todas as tarefas e faz a paginação
         $tarefas = Tarefa::paginate(15);
         return TarefaResource::collection($tarefas);
     }
@@ -31,48 +31,38 @@ class TarefaController extends Controller
         $tarefa->updated_at  = $momento_atual;
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
-        //
+        // Recupera apenas a tarefa solicitada
+        $tarefa = Tarefa::findOrFail($id);
+        return new TarefaResource($tarefa);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    public function update(Request $request)
     {
-        //
+        // Obtem o timestamp atual
+        $timestamp_atual = new TimestampService();
+        $momento_atual = $timestamp_atual->timestampAtual();
+
+        // Permite a atualização de uma tarefa
+        $tarefa = Tarefa::findOrFail( $request->id );
+        $tarefa->nome = $request->input('nome');
+        $tarefa->descricao = $request->input('descricao');
+        $tarefa->concluido = $request->input('concluido');
+        $tarefa->updated_at  = $momento_atual;
+
+        if( $tarefa->save() ) {
+            return new TarefaResource( $tarefa );
+        }
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
-        //
+        // Recupera e exclui a tarefa solicitada
+        $tarefa = Tarefa::findOrFail($id);
+
+        if( $tarefa->delete() ) {
+            return new TarefaResource($tarefa);
+        }
     }
 }

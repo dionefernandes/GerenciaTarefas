@@ -2,18 +2,30 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TarefaController;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
+/*******************************************************************************
+    Rotas da API
+********************************************************************************/
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+// Lista todos as tarefas
+Route::get('/', [TarefaController::class, 'index'])->name('index');
+Route::get('/index', [TarefaController::class, 'index'])->name('index');
+Route::get('/home', [TarefaController::class, 'index'])->name('index');
+Route::get('/tarefas', [TarefaController::class, 'index'])->name('index');
+
+// Retorna somente a tarefa solicitada
+Route::match(['get', 'post'], 'tarefa/{$id}', [TarefaController::class, 'show']);
+
+// Cria uma nova tarefa
+Route::post('tarefa/{$id}', [TarefaController::class, 'store']);
+
+// Atualiza uma tarefa
+Route::put('tarefa/{$id}', [TarefaController::class, 'update']);
+
+// Apaga uma tarefa
+Route::delete('tarefa/{$id}', [TarefaController::class, 'destroy']);
