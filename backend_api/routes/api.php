@@ -19,13 +19,13 @@ Route::get('/home', [TarefaController::class, 'index'])->name('index');
 Route::get('/tarefas', [TarefaController::class, 'index'])->name('index');
 
 // Retorna somente a tarefa solicitada
-Route::match(['get', 'post'], 'tarefa/{$id}', [TarefaController::class, 'show']);
+Route::match(['get', 'post'], 'tarefa/{id}', [TarefaController::class, 'show']);
 
 // Cria uma nova tarefa
-Route::post('tarefa/{$id}', [TarefaController::class, 'store']);
+Route::post('tarefa', [TarefaController::class, 'store']);
 
 // Atualiza uma tarefa
-Route::put('tarefa/{$id}', [TarefaController::class, 'update']);
+Route::put('tarefa/{id}', [TarefaController::class, 'update']);
 
 // Apaga uma tarefa
-Route::delete('tarefa/{$id}', [TarefaController::class, 'destroy']);
+Route::delete('tarefa/{id}', [TarefaController::class, 'destroy']);

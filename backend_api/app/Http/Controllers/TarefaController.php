@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Tarefa as Tarefa;
 use App\Http\Resources\Tarefa as TarefaResource;
-use App\Services\TimestampService as TimestampService;
+use App\Services\TimestampService;
 use Illuminate\Http\Request;
 
 class TarefaController extends Controller
@@ -29,6 +29,10 @@ class TarefaController extends Controller
         $tarefa->concluido = $request->input('concluido');
         $tarefa->created_at = $momento_atual;
         $tarefa->updated_at  = $momento_atual;
+
+        if( $tarefa->save() ) {
+            return new TarefaResource($tarefa);
+        }
     }
 
     public function show($id)
@@ -52,7 +56,7 @@ class TarefaController extends Controller
         $tarefa->updated_at  = $momento_atual;
 
         if( $tarefa->save() ) {
-            return new TarefaResource( $tarefa );
+            return new TarefaResource($tarefa);
         }
     }
 

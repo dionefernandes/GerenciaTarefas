@@ -6,7 +6,9 @@
         public function timestampAtual() {
             // Retorna o timestamp atual para registrar atualizações na tarefa
             $date = date_create();
-            date_timestamp_get($date);
+            $timestamp_atual = date_timestamp_get($date);
+
+            return $timestamp_atual;
         }
     }
 ?>
