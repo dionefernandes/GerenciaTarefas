@@ -27,8 +27,8 @@ class TarefaController extends Controller
         $tarefa->nome = $request->input('nome');
         $tarefa->descricao = $request->input('descricao');
         $tarefa->concluido = $request->input('concluido');
-        $tarefa->created_at = $momento_atual;
-        $tarefa->updated_at  = $momento_atual;
+        //$tarefa->created_at = $momento_atual;
+        //$tarefa->updated_at  = $momento_atual;
 
         if( $tarefa->save() ) {
             return new TarefaResource($tarefa);
@@ -53,7 +53,7 @@ class TarefaController extends Controller
         $tarefa->nome = $request->input('nome');
         $tarefa->descricao = $request->input('descricao');
         $tarefa->concluido = $request->input('concluido');
-        $tarefa->updated_at  = $momento_atual;
+        //$tarefa->updated_at  = $momento_atual;
 
         if( $tarefa->save() ) {
             return new TarefaResource($tarefa);
