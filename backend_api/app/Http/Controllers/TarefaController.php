@@ -36,9 +36,13 @@ class TarefaController extends Controller
 
     public function show($id)
     {
-        // Recupera apenas a tarefa solicitada
-        $tarefa = Tarefa::findOrFail($id);
-        return new TarefaResource($tarefa);
+        try {
+            // Recupera apenas a tarefa solicitada
+            $tarefa = Tarefa::findOrFail($id);
+            return new TarefaResource($tarefa);
+        } catch (Exception $e) {
+            return 'Houve uma falha ao tentar exibir a tarefa solicitada. Tente novamente mais tarde.';
+        }
     }
 
     public function update(Request $request)

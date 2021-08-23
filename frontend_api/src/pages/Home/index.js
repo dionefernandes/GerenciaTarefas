@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Titulo, FormFiltrar, Input, Select, Button, Table, faCheck } from "./styles";
+import { Titulo, FormFiltrar, Input, Select, Button, Table } from "./styles";
 import {Link} from 'react-router-dom';
 
 export const Home = () => {
@@ -35,7 +35,7 @@ export const Home = () => {
           <Input type="text" name="busca" placeholder="Buscar..." />
 
           <Select name="situacao">
-            <option value="Todas" selected>Todas</option>
+            <option value="Todas">Todas</option>
             <option value="Concluidas">Concluídas</option>
             <option value="Pendentes">Pendentes</option>
           </Select>
@@ -71,6 +71,11 @@ export const Home = () => {
               </td>
               <td class="centraConteudo">
                 { tarefa.concluido === 0 ? <i class="fas fa-clipboard-check" id='espacaItem' title='Concluir tarefa'></i> : <i class="fas fa-check" id='espacaItem' title='Tarefa concluída'></i> }
+                
+                <Link to={"/visualizar/" + tarefa.id}>
+                  <i class="fas fa-search-plus" title="Visualizar tarefa"></i>
+                </Link>
+                
                 { tarefa.concluido === 0 ? <i class="fas fa-edit" id='espacaItem' title="Editar tarefa"></i> : '' }
                 { tarefa.concluido === 0 ? <i class="fas fa-trash" id='espacaItem' title="Excluir tarefa"></i> : '' }
               </td>

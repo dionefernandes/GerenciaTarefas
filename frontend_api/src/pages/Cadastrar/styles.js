@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const Container = styled.section`
     box-shadow: 0 0 1em #6c757d;
     margin: 1.5em auto;
-    max-width: 80%;
+    width: 80%;
     padding: 16px;
 `;
 
