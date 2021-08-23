@@ -1,8 +1,41 @@
-import React, { useState, useEffect } from "react";
-import { Titulo, FormFiltrar, Input, Select, Button, Table } from "./styles";
+import React, { useState, useEffect} from "react";
+import { Titulo, AlertSuccess, AlertDanger, FormFiltrar, Input, Select, Button, Table } from "./styles";
 import {Link} from 'react-router-dom';
 
-export const Home = () => {
+export const Home = (props) => {
+  const [status, setStatus] = useState({
+    type: '',
+    mensagem: ''
+  });
+
+  const [concluido, setConcluido] = useState('');
+  const [busca, setBusca] = useState('');
+
+  const fitraTarefa = async e => {
+    e.preventDefault();
+
+    if(busca == '' || concluido == '') {
+      setStatus({
+        // Erro caso não consiga excluir a tarefa
+        type: 'erro',
+        mensagem: 'Você deve informar os termos de busca e a situação da tarefa desejados.'
+      });
+      return getTarefas();
+    }
+
+    // Envia os dados para API
+    await fetch("http://localhost/gerencia_tarefas/backend_api/public/api/tarefa/filter/" + busca + "/" + concluido, {
+      method: 'GET',
+    })
+    .then((response) => response.json())
+    .then((responseJson) => {
+        //console.log(responseJson)
+
+        setData(responseJson.data)
+    });
+  }
+  
+
   // Constante que receberá os dados. É iniciada com um array vazio
   const [data, setData] = useState([]);
 
@@ -20,6 +53,42 @@ export const Home = () => {
     ));
   }
 
+  const apagarTarefa = async(id) => {
+    //console.log(id);
+
+    await fetch("http://localhost/gerencia_tarefas/backend_api/public/api/tarefa/" + id, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+      .then((response) => response.json())
+      .then((responseJson) => {
+        //console.log(responseJson)
+
+        if(responseJson.erro) {
+          setStatus({
+            // Erro caso não consiga excluir a tarefa
+            type: 'erro',
+            mensagem: 'Falha ao tentar excluir a tarefa. Por favor, verifique se os dados estão corretos.'
+          });
+        } else {
+          setStatus({
+            // Sucesso ao excluir a tarefa
+            type: 'success',
+            mensagem: 'Tarefa excluida com sucesso!'
+          });
+          getTarefas();
+        }
+      }).catch(() => {
+        setStatus({
+          // Erro caso não consiga conectar com a API
+          type: 'erro',
+          mensagem: 'Falha na conexão com o servidor. Por favor, tente novamente mais tarde.'
+        });
+    });
+  }
+  
   // Executa ao carregar a página.
   // O [] serve para não ficar em loop infinito. Aguarda uma requisição
   useEffect(() => {
@@ -30,17 +99,20 @@ export const Home = () => {
     <div>
       <Titulo>Lista de tarefas</Titulo>
 
+      {status.type === 'erro'? <AlertDanger>{status.mensagem}</AlertDanger> : ''}
+      {status.type === 'success'? <AlertSuccess>{status.mensagem}</AlertSuccess> : ''}
+
       <div class="boxFiltro">
         <FormFiltrar>
-          <Input type="text" name="busca" placeholder="Buscar..." />
+          <Input type="text" name="busca" placeholder="Buscar..." onChange={e => setBusca(e.target.value)} />
 
-          <Select name="situacao">
-            <option value="Todas">Todas</option>
-            <option value="Concluidas">Concluídas</option>
-            <option value="Pendentes">Pendentes</option>
+          <Select name="concluido"  onChange={e => setConcluido(e.target.value)}>
+            <option value="">Todas</option>
+            <option value="1">Concluídas</option>
+            <option value="0">Pendentes</option>
           </Select>
 
-          <Button type="submit">
+          <Button type="buttom" onClick={fitraTarefa}>
             <i class="fas fa-filter"></i>&nbsp; Filtrar
           </Button>
         </FormFiltrar>
@@ -70,14 +142,18 @@ export const Home = () => {
                 { tarefa.concluido === 1 ? 'Sim' : 'Não' }
               </td>
               <td class="centraConteudo">
-                { tarefa.concluido === 0 ? <i class="fas fa-clipboard-check" id='espacaItem' title='Concluir tarefa'></i> : <i class="fas fa-check" id='espacaItem' title='Tarefa concluída'></i> }
-                
                 <Link to={"/visualizar/" + tarefa.id}>
                   <i class="fas fa-search-plus" title="Visualizar tarefa"></i>
                 </Link>
+
+                <Link to={"/editar/" + tarefa.id}>
+                  { tarefa.concluido === 0 ? <i class="fas fa-edit" id='espacaItem' title="Editar tarefa"></i> : '' }
+                </Link>
+
+                <Link onClick={() => apagarTarefa(tarefa.id)}>
+                  { tarefa.concluido === 0 ? <i class="fas fa-trash" id='espacaItem' title="Excluir tarefa"></i> : '' }
+                </Link>
                 
-                { tarefa.concluido === 0 ? <i class="fas fa-edit" id='espacaItem' title="Editar tarefa"></i> : '' }
-                { tarefa.concluido === 0 ? <i class="fas fa-trash" id='espacaItem' title="Excluir tarefa"></i> : '' }
               </td>
             </tr>
           ))}

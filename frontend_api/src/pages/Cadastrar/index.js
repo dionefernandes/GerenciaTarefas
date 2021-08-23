@@ -41,7 +41,7 @@ export const Cadastrar = () => {
 
         if(responseJson.erro) {
           setStatus({
-            // Erro caso não consiga conectar com a API
+            // Erro caso não cadastrar a tarefa
             type: 'erro',
             mensagem: 'Falha ao tentar cadastrar a tarefa. Por favor, verifique se os dados estão corretos.'
           });

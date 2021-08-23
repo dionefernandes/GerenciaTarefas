@@ -12,7 +12,16 @@ class TarefaController extends Controller
     public function index()
     {
         // Lista todas as tarefas e faz a paginação
-        $tarefas = Tarefa::paginate(15);
+        $tarefas = Tarefa::all();
+        return TarefaResource::collection($tarefas);
+    }
+
+    public function filter($busca, $concluido)
+    {
+        // Lista todas as tarefas e faz a paginação
+        $tarefas = Tarefa::where('nome', 'LIKE', "%{$busca}%")
+                        ->where('concluido', "{$concluido}")
+                        ->get();
         return TarefaResource::collection($tarefas);
     }
 
