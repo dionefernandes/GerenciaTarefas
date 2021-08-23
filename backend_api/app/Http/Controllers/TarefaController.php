@@ -18,21 +18,20 @@ class TarefaController extends Controller
 
     public function store(Request $request)
     {
-        // Obtem o timestamp atual
-        $timestamp_atual = new TimestampService();
-        $momento_atual = $timestamp_atual->timestampAtual();
+        try {
+            // Faz o cadastro de uma nova tarefa
+            $tarefa = new Tarefa();
+            $tarefa->nome = $request->input('nome');
+            $tarefa->descricao = $request->input('descricao');
+            $tarefa->concluido = $request->input('concluido');
 
-        // Faz o cadastro de uma nova tarefa
-        $tarefa = new Tarefa();
-        $tarefa->nome = $request->input('nome');
-        $tarefa->descricao = $request->input('descricao');
-        $tarefa->concluido = $request->input('concluido');
-        //$tarefa->created_at = $momento_atual;
-        //$tarefa->updated_at  = $momento_atual;
-
-        if( $tarefa->save() ) {
-            return new TarefaResource($tarefa);
+            if( $tarefa->save() ) {
+                return new TarefaResource($tarefa);
+            }
+        } catch (Exception $e) {
+            return 'Houve um problema e a tarefa não pode ser cadastrada. Tente novamente mais tarde.';
         }
+        
     }
 
     public function show($id)
@@ -44,19 +43,18 @@ class TarefaController extends Controller
 
     public function update(Request $request)
     {
-        // Obtem o timestamp atual
-        $timestamp_atual = new TimestampService();
-        $momento_atual = $timestamp_atual->timestampAtual();
+        try {
+            // Permite a atualização de uma tarefa
+            $tarefa = Tarefa::findOrFail( $request->id );
+            $tarefa->nome = $request->input('nome');
+            $tarefa->descricao = $request->input('descricao');
+            $tarefa->concluido = $request->input('concluido');
 
-        // Permite a atualização de uma tarefa
-        $tarefa = Tarefa::findOrFail( $request->id );
-        $tarefa->nome = $request->input('nome');
-        $tarefa->descricao = $request->input('descricao');
-        $tarefa->concluido = $request->input('concluido');
-        //$tarefa->updated_at  = $momento_atual;
-
-        if( $tarefa->save() ) {
-            return new TarefaResource($tarefa);
+            if( $tarefa->save() ) {
+                return new TarefaResource($tarefa);
+            }
+        } catch (Exception $e) {
+            return 'Houve um problema ao tentar atualizar a tarefa. Tente novamente mais tarde.';
         }
     }
 
