@@ -14,7 +14,7 @@ export const Home = (props) => {
   const fitraTarefa = async e => {
     e.preventDefault();
 
-    if(busca == '' || concluido == '') {
+    if(busca == '' && concluido == '') {
       setStatus({
         // Erro caso não consiga excluir a tarefa
         type: 'erro',
@@ -23,8 +23,16 @@ export const Home = (props) => {
       return getTarefas();
     }
 
+    let rota = "http://localhost/gerencia_tarefas/backend_api/public/api/tarefa/filter/" + busca + "/" + concluido;
+    
+    if(busca == '' || concluido == '') {
+      rota = "http://localhost/gerencia_tarefas/backend_api/public/api/tarefa/filter/" + concluido;
+    }
+
+    console.log(rota);
+
     // Envia os dados para API
-    await fetch("http://localhost/gerencia_tarefas/backend_api/public/api/tarefa/filter/" + busca + "/" + concluido, {
+    await fetch(rota, {
       method: 'GET',
     })
     .then((response) => response.json())

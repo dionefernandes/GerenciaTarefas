@@ -19,7 +19,7 @@ Route::get('/home', [TarefaController::class, 'index'])->name('index');
 Route::get('/tarefas', [TarefaController::class, 'index'])->name('index');
 
 // Retorna as tarefas filtradas
-Route::get('tarefa/filter/{busca}/{concluido}', [TarefaController::class, 'filter']);
+Route::get('tarefa/filter/{busca?}/{concluido?}', [TarefaController::class, 'filter']);
 
 // Retorna somente a tarefa solicitada
 Route::match(['get', 'post'], 'tarefa/{id}', [TarefaController::class, 'show']);

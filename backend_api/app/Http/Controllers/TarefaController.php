@@ -16,12 +16,22 @@ class TarefaController extends Controller
         return TarefaResource::collection($tarefas);
     }
 
-    public function filter($busca, $concluido)
+    public function filter($busca = '', $concluido = '')
     {
-        // Lista todas as tarefas e faz a paginação
-        $tarefas = Tarefa::where('nome', 'LIKE', "%{$busca}%")
-                        ->where('concluido', "{$concluido}")
-                        ->get();
+        if($busca == '' || $concluido == '') {
+            if($busca != '' && $concluido == '') {
+                $concluido = $busca;
+            }
+            
+            // Lista todas as tarefas e faz a paginação
+            $tarefas = Tarefa::where('concluido', "{$concluido}")->get();
+        } else {
+            // Lista todas as tarefas e faz a paginação
+            $tarefas = Tarefa::where('nome', 'LIKE', "%{$busca}%")
+            ->where('concluido', "{$concluido}")
+            ->get();
+        }
+
         return TarefaResource::collection($tarefas);
     }
 
